@@ -12,7 +12,8 @@ config = {
     'version': '0.1',
     'packages': ['atmap'],
     'name': 'atmap',
-    'scripts': ['bin/atscheduler']
+    'scripts': ['bin/atscheduler'],
+    'install_requires': ['python-dateutil']
 }
 
 setup(**config)

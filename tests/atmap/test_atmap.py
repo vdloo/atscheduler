@@ -1,7 +1,7 @@
 from unittest import TestCase
 from mock import patch
 
-from atmap import atmap, format_command, pair_arguments, count_arguments, format_email_output_commands, format_at_commands
+from atmap import atmap, format_command, pair_items, count_arguments, format_email_output_commands, format_at_commands
 
 class TesFormatAtCommands(TestCase):
     commands = ['echo 1', 'echo "2"']
@@ -37,10 +37,10 @@ class TestCountArguments(TestCase):
         self.assertEqual(ret1, 1)
         self.assertEqual(ret2, 2)
 
-class TestPairArguments(TestCase):
-    def test_pair_arguments_pairs_arguments(self):
-        ret1 = pair_arguments([1, 2, 3, 4], 2)
-        ret2 = pair_arguments([1, 2, 3, 4], 4)
+class TestPairItems(TestCase):
+    def test_pair_items_pairs_arguments(self):
+        ret1 = pair_items([1, 2, 3, 4], 2)
+        ret2 = pair_items([1, 2, 3, 4], 4)
 
         self.assertEqual(ret1, [(1, 2), (3, 4)])
         self.assertEqual(ret2, [(1, 2, 3, 4)])
@@ -52,7 +52,7 @@ class TestFormatCommand(TestCase):
 
         c_args.assert_called_once_with('echo {1}')
 
-    @patch('atmap.pair_arguments')
+    @patch('atmap.pair_items')
     def test_format_command_pairs_arguments(self, p_args):
         ret = format_command('echo {0} {1}', [1, 2, 3, 4])
 
