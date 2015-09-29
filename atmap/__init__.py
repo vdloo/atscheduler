@@ -46,7 +46,7 @@ def create_at_generator(at, interval):
 
 def batch_items(items, amount=0):
     batches = pair_items(items, amount) if amount else [items]
-    left = len(items) % amount
+    left = len(items) % amount if amount else 0
     if left:
         batches.append(items[-left:])
     return batches
