@@ -40,7 +40,7 @@ def create_at_generator(at, interval):
     dt = parser.parse(at)
     def at_generator(dt, interval):
         while True:
-            yield dt.strftime('%H:%M%p %d %b %Y')
+            yield dt.strftime('%H:%M %d %b %Y')
             dt = dt + timedelta(minutes=interval)
     return at_generator(dt, interval)
 
