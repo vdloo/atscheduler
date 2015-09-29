@@ -40,8 +40,8 @@ def create_at_generator(at, interval):
     dt = parser.parse(at)
     def at_generator(dt, interval):
         while True:
-            dt = dt + timedelta(minutes=interval)
             yield dt.strftime('%H:%M%p %d %b %Y')
+            dt = dt + timedelta(minutes=interval)
     return at_generator(dt, interval)
 
 def batch_items(items, amount=0):

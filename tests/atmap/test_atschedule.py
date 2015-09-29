@@ -28,11 +28,11 @@ class TestCreateAtGenerator(TestCase):
         ret = create_at_generator('15:00 29 Sep 2015', 10)
 
         expected_result = [
+            '15:00PM 29 Sep 2015',
             '15:10PM 29 Sep 2015',
             '15:20PM 29 Sep 2015',
             '15:30PM 29 Sep 2015',
             '15:40PM 29 Sep 2015',
-            '15:50PM 29 Sep 2015'
         ]
 
         self.assertEqual(expected_result, map(lambda _: ret.next(), xrange(5)))
