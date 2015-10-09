@@ -14,13 +14,22 @@ def format_email_output_commands(commands, email):
 def count_arguments(command):
     return len(findall(r"\{\d+\}", command))
 
-def pair_items(items, amount):
-    return zip(*[iter(items)]*amount)
+def group_n_elements(elements, n=1):
+    groups = map(list, zip(*[iter(elements)]*n))
+    left = len(elements) % n if n else False
+    if left:
+        groups.append(elements[-left:])
+    return groups
+
+def group_items(command, items):
+    count = count_arguments(command)
+    return group_n_elements(items, count)
 
 def format_command(command, items):
-    count = count_arguments(command)
-    paired_arguments_list = pair_items(items, count)
-    return map(lambda paired_args: command.format(*paired_args), paired_arguments_list)
+    try:
+        return map(lambda grouped_args: command.format(*grouped_args), items)
+    except IndexError:
+        raise RuntimeError("Invalid amount of arguments for the command provided")
 
 def atmap(command, items, at, email=None):
     commands = format_command(command, items)
@@ -44,22 +53,20 @@ def create_at_generator(at, interval):
             dt = dt + timedelta(minutes=interval)
     return at_generator(dt, interval)
 
-def batch_items(items, amount=0):
-    batches = pair_items(items, amount) if amount else [items]
-    left = len(items) % amount if amount else 0
-    if left:
-        batches.append(items[-left:])
+def batch_items(command, items, amount=0):
+    argument_lists = group_items(command, items)
+    batches = group_n_elements(argument_lists, amount) if amount else [items]
     return batches
 
-def create_batches(items, at, parallel, interval):
-    batches = batch_items(items, parallel)
+def create_batches(command, items, at, parallel, interval):
+    batches = batch_items(command, items, parallel)
     at_generator = create_at_generator(at, interval)
     return batches, at_generator
 
 def schedule_batches(command, batches, at, email, parallel):
-    return chain(*map(lambda sub_items: atmap(command, sub_items, at.next(), email=email), batches))
+    return chain(*map(lambda batch: atmap(command, batch, at.next(), email=email), batches))
 
 def atschedule(command, items, at, email=None, parallel=0, interval=0):
     check_parameters(parallel=parallel, interval=interval)
-    batches, at = create_batches(items, at, parallel, interval)
+    batches, at = create_batches(command, items, at, parallel, interval)
     return schedule_batches(command, batches, at, email, parallel)
