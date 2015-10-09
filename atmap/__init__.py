@@ -5,7 +5,7 @@ from datetime import timedelta
 from itertools import chain
 
 def format_at_commands(commands, at):
-    return map(lambda command: "echo %s | at %s" % (dumps(command), at), commands)
+    return map(lambda command: "echo %s 2>&1 | at %s" % (dumps(command), at), commands)
 
 def format_email_output_commands(commands, email):
     return map(lambda command: "(%s) | mail -s 'at command output' %s" % 
