@@ -12,7 +12,7 @@ def format_email_output_commands(commands, email):
             (command, email), commands)
 
 def count_arguments(command):
-    return len(findall(r"\{\d+\}", command))
+    return len(set(findall(r"\{\d+\}", command)))
 
 def group_n_elements(elements, n=1):
     groups = map(list, zip(*[iter(elements)]*n))
