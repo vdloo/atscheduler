@@ -10,8 +10,8 @@ class TesFormatAtCommands(TestCase):
         ret = format_at_commands(self.commands, '15:00')
 
         expected_formatted_commands = [
-                'echo "echo 1" | at 15:00',
-                'echo "echo \\"2\\"" | at 15:00'
+                'echo "echo 1" 2>&1 | at 15:00',
+                'echo "echo \\"2\\"" 2>&1 | at 15:00'
         ]
 
         self.assertEqual(ret, expected_formatted_commands)

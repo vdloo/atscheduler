@@ -84,11 +84,11 @@ class TestScheduleBatches(TestCase):
 
         expected_result = 'blaap'
         expected_result = [
-                'echo "(echo 1 2) | mail -s \'at command output\' test@example.com" | at 5', 
-                'echo "(echo 3 4) | mail -s \'at command output\' test@example.com" | at 6', 
-                'echo "(echo 5 6) | mail -s \'at command output\' test@example.com" | at 7', 
-                'echo "(echo 7 8) | mail -s \'at command output\' test@example.com" | at 8',
-                'echo "(echo 9 10) | mail -s \'at command output\' test@example.com" | at 9'
+                'echo "(echo 1 2) | mail -s \'at command output\' test@example.com" 2>&1 | at 5', 
+                'echo "(echo 3 4) | mail -s \'at command output\' test@example.com" 2>&1 | at 6', 
+                'echo "(echo 5 6) | mail -s \'at command output\' test@example.com" 2>&1 | at 7', 
+                'echo "(echo 7 8) | mail -s \'at command output\' test@example.com" 2>&1 | at 8',
+                'echo "(echo 9 10) | mail -s \'at command output\' test@example.com" 2>&1 | at 9'
         ]
         self.assertEqual(map(lambda x: x, ret), expected_result)
 
