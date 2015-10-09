@@ -1,7 +1,7 @@
 from unittest import TestCase
 from mock import patch
 
-from atmap import atmap, format_command, pair_items, count_arguments, format_email_output_commands, format_at_commands
+from atmap import atmap, format_command, group_items, count_arguments, format_email_output_commands, format_at_commands
 
 class TesFormatAtCommands(TestCase):
     commands = ['echo 1', 'echo "2"']
@@ -37,36 +37,30 @@ class TestCountArguments(TestCase):
         self.assertEqual(ret1, 1)
         self.assertEqual(ret2, 2)
 
-class TestPairItems(TestCase):
-    def test_pair_items_pairs_arguments(self):
-        ret1 = pair_items([1, 2, 3, 4], 2)
-        ret2 = pair_items([1, 2, 3, 4], 4)
+class TestGroupItems(TestCase):
+    def test_group_items_pairs_arguments(self):
+        ret1 = group_items("echo {0} {1}", [1, 2, 3, 4])
+        ret2 = group_items("echo {0} {1} {2} {3}", [1, 2, 3, 4])
 
-        self.assertEqual(ret1, [(1, 2), (3, 4)])
-        self.assertEqual(ret2, [(1, 2, 3, 4)])
+        self.assertEqual(ret1, [[1, 2], [3, 4]])
+        self.assertEqual(ret2, [[1, 2, 3, 4]])
 
 class TestFormatCommand(TestCase):
-    @patch('atmap.count_arguments')
-    def test_format_command_counts_arguments(self, c_args):
-        format_command('echo {1}', [1, 2, 3])
-
-        c_args.assert_called_once_with('echo {1}')
-
-    @patch('atmap.pair_items')
-    def test_format_command_pairs_arguments(self, p_args):
-        ret = format_command('echo {0} {1}', [1, 2, 3, 4])
-
-        p_args.assert_called_once_with([1, 2, 3, 4], 2)
-
     def test_format_command_formats_command_in_right_order(self):
-        ret = format_command('echo {3} {1} {2} {0}', [1, 2, 3, 4])
+        ret = format_command('echo {3} {1} {2} {0}', [[1, 2, 3, 4]])
         
         self.assertEqual(ret, ['echo 4 2 3 1'])
 
     def test_format_command_with_pairs(self):
-        ret = format_command('echo {0}', [1, 2, 3, 4])
+        ret = format_command('echo {0}', [[1], [2], [3], [4]])
 
         self.assertEqual(ret, ['echo 1', 'echo 2', 'echo 3', 'echo 4'])
+
+    def test_format_command_raises_runtimeerror_when_invalid_amount_of_arguments(self):
+	with self.assertRaises(RuntimeError):
+	    format_command('echo {0} {1}', [[1]])
+
+
 
 @patch('atmap.format_at_commands')
 @patch('atmap.format_email_output_commands')

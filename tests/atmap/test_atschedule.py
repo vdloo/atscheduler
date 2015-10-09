@@ -42,16 +42,17 @@ class TestCreateAtGenerator(TestCase):
 @patch('atmap.batch_items')
 class TestCreateBatches(TestCase):
 
+    command = "echo {0}"
     items = [1, 2, 3, 4]
     at = '15:00'
     parallel = 5
     interval = 10
-    test_args = [items, at, parallel, interval]
+    test_args = [command, items, at, parallel, interval]
 
     def test_create_batches_batches_items(self, batch_items, *args):
         create_batches(*self.test_args)
 
-        batch_items.assert_called_once_with(self.items, self.parallel)
+        batch_items.assert_called_once_with(self.command, self.items, self.parallel)
 
     def test_create_batches_creates_at_generator(self, _, create_at_generator):
         create_batches(*self.test_args)
@@ -66,7 +67,7 @@ class TestCreateBatches(TestCase):
 class TestScheduleBatches(TestCase):
 
     command = 'echo {0} {1}'
-    batches = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 10]]
+    batches = [[[1, 2]], [[3, 4]], [[5, 6]], [[7, 8]], [[9, 10]]]
     at = (x for x in xrange(10))
     email = 'test@example.com'
     parallel = 2
@@ -117,14 +118,14 @@ class TestAtSchedule(TestCase):
         
         check_parameters.assert_called_once_with(parallel=5, interval=0)
 
-    def test_atschedule_creates_batches(self, _, creates_batches, *args):
+    def test_atschedule_create_batches(self, _, create_batches, *args):
         atschedule(*self.test_args, parallel=5, interval=10)
 
-        creates_batches.assert_called_once_with(self.items, self.at, 5, 10)
+        create_batches.assert_called_once_with('echo {0}', [1, 2, 3], '15:00', 5, 10)
 
-    def test_atschedule_schedules_batches(self, _, creates_batches, schedule_batches):
+    def test_atschedule_schedules_batches(self, _, create_batches, schedule_batches):
         atschedule(*self.test_args, email='test@example.com', parallel=5, interval=10)
-        batches, at = creates_batches.return_value
+        batches, at = create_batches.return_value
 
         schedule_batches.assert_called_once_with(
             self.command, batches, at, 'test@example.com', 5
