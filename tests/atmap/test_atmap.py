@@ -33,9 +33,11 @@ class TestCountArguments(TestCase):
     def test_count_arguments_counts_arguments(self):
         ret1 = count_arguments('echo {0}')
         ret2 = count_arguments('echo {0} {1}')
+        ret3 = count_arguments('echo {}')
 
         self.assertEqual(ret1, 1)
         self.assertEqual(ret2, 2)
+        self.assertEqual(ret3, 1)
 
 class TestGroupItems(TestCase):
     def test_group_items_pairs_arguments(self):
