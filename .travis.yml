@@ -1,0 +1,5 @@
+language: python
+python:
+  - "2.7.6"
+install: "pip install -r requirements/development.txt"
+script: ./runtests.sh -1
