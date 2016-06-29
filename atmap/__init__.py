@@ -55,7 +55,7 @@ def create_at_generator(at, interval):
 
 def batch_items(command, items, amount=0):
     argument_lists = group_items(command, items)
-    batches = group_n_elements(argument_lists, amount) if amount else [items]
+    batches = group_n_elements(argument_lists, amount) if amount else [argument_lists]
     return batches
 
 def create_batches(command, items, at, parallel, interval):
