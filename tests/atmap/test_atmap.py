@@ -25,8 +25,8 @@ class TestFormatEmailOutputCommands(TestCase):
         ret = format_email_output_commands(self.commands, 'test@example.com')
 
         expected_formatted_commands = [
-                "(echo 1) | mail -s 'at command output' test@example.com",
-                "(echo 2) | mail -s 'at command output' test@example.com"
+                "echo 1 | mail -s 'at command output' test@example.com",
+                "echo 2 | mail -s 'at command output' test@example.com"
         ]
 
         self.assertEqual(ret, expected_formatted_commands)

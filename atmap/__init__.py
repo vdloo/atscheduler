@@ -10,7 +10,7 @@ def format_at_commands(commands, at):
 
 
 def format_email_output_commands(commands, email):
-    return list(map(lambda command: "(%s) | mail -s 'at command output' %s" % (command, email), commands))
+    return list(map(lambda command: "{} | mail -s 'at command output' {}".format(command, email), commands))
 
 
 def count_arguments(command):

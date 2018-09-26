@@ -45,8 +45,8 @@ echo "echo \"this is job 6 5 4\"" 2>&1 | at 21:30 29 Sep 2015
 Send the output somewhere by redirecting it to mail
 ```bash
 $ python bin/atscheduler --email example@example.com --at 20:00 'echo "this is job {0}"' 1 2
-echo "(echo \"this is job 1\") 2>&1 | mail -s 'at command output' example@example.com" 2>&1 | at 20:00 29 Sep 2015
-echo "(echo \"this is job 2\") 2>&1 | mail -s 'at command output' example@example.com" 2>&1 | at 20:00 29 Sep 2015
+echo "echo \"this is job 1\" | mail -s 'at command output' example@example.com" 2>&1 | at 20:00 26 Sep 2018
+echo "echo \"this is job 2\" | mail -s 'at command output' example@example.com" 2>&1 | at 20:00 26 Sep 2018
 ```
 
 To actually schedule the job, simply pipe it to sh (but it's a good idea to always inspect the output first!)
