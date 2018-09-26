@@ -3,6 +3,7 @@ from mock import patch
 
 from atmap import atmap, format_command, group_items, count_arguments, format_email_output_commands, format_at_commands
 
+
 class TesFormatAtCommands(TestCase):
     commands = ['echo 1', 'echo "2"']
 
@@ -15,6 +16,7 @@ class TesFormatAtCommands(TestCase):
         ]
 
         self.assertEqual(ret, expected_formatted_commands)
+
 
 class TestFormatEmailOutputCommands(TestCase):
     commands = ['echo 1', 'echo 2']
@@ -29,6 +31,7 @@ class TestFormatEmailOutputCommands(TestCase):
 
         self.assertEqual(ret, expected_formatted_commands)
 
+
 class TestCountArguments(TestCase):
     def test_count_arguments_counts_arguments(self):
         ret1 = count_arguments('echo {0}')
@@ -39,6 +42,7 @@ class TestCountArguments(TestCase):
         self.assertEqual(ret2, 2)
         self.assertEqual(ret3, 1)
 
+
 class TestGroupItems(TestCase):
     def test_group_items_pairs_arguments(self):
         ret1 = group_items("echo {0} {1}", [1, 2, 3, 4])
@@ -46,6 +50,7 @@ class TestGroupItems(TestCase):
 
         self.assertEqual(ret1, [[1, 2], [3, 4]])
         self.assertEqual(ret2, [[1, 2, 3, 4]])
+
 
 class TestFormatCommand(TestCase):
     def test_format_command_formats_command_in_right_order(self):
@@ -59,9 +64,8 @@ class TestFormatCommand(TestCase):
         self.assertEqual(ret, ['echo 1', 'echo 2', 'echo 3', 'echo 4'])
 
     def test_format_command_raises_runtimeerror_when_invalid_amount_of_arguments(self):
-	with self.assertRaises(RuntimeError):
-	    format_command('echo {0} {1}', [[1]])
-
+        with self.assertRaises(RuntimeError):
+            format_command('echo {0} {1}', [[1]])
 
 
 @patch('atmap.format_at_commands')
@@ -81,7 +85,7 @@ class TestAtMap(TestCase):
 
         f_email.assert_called_once_with(f_command.return_value, 'test@example.com')
 
-    def test_atmap_does_not_format_email_output_commands_if_no_email_is_specified(self, f_command, f_email, _):
+    def test_atmap_does_not_format_email_output_commands_if_no_email_is_specified(self, _1, f_email, _2):
         atmap(self.command, self.items, '15:00')
 
         self.assertEqual(0, len(f_email.mock_calls))
@@ -89,11 +93,13 @@ class TestAtMap(TestCase):
     def test_atmap_formats_at_commands(self, f_command, _, f_at_command):
         ret = atmap(self.command, self.items, '15:00')
 
-	f_at_command.assert_called_once_with(f_command.return_value, '15:00')
-	self.assertEqual(ret, f_at_command.return_value)
+        f_at_command.assert_called_once_with(f_command.return_value, '15:00')
+        self.assertEqual(ret, f_at_command.return_value)
 
-    def test_atmap_formats_at_commands_using_formatted_email_commands_if_email_is_specified(self, _, f_email, f_at_command):
+    def test_atmap_formats_at_commands_using_formatted_email_commands_if_email_is_specified(
+            self, _, f_email, f_at_command
+    ):
         ret = atmap(self.command, self.items, '15:00', 'test@example.com')
 
-	f_at_command.assert_called_once_with(f_email.return_value, '15:00')
-	self.assertEqual(ret, f_at_command.return_value)
+        f_at_command.assert_called_once_with(f_email.return_value, '15:00')
+        self.assertEqual(ret, f_at_command.return_value)
