@@ -5,6 +5,7 @@ import collections
 from atmap import atschedule, schedule_batches, create_batches, \
     create_at_generator, check_parameters
 
+
 class TestCheckParameters(TestCase):
     def test_check_parameters_excepts_when_parallel_less_than_0(self):
         with self.assertRaises(RuntimeError):
@@ -17,6 +18,7 @@ class TestCheckParameters(TestCase):
     def test_check_parameters_excepts_when_parallel_is_positive_but_interval_is_0(self):
         with self.assertRaises(RuntimeError):
             check_parameters(parallel=1, interval=0)
+
 
 class TestCreateAtGenerator(TestCase):
     def test_create_at_generator_creates_iterable(self):
@@ -35,7 +37,7 @@ class TestCreateAtGenerator(TestCase):
             '15:40 29 Sep 2015',
         ]
 
-        self.assertEqual(expected_result, map(lambda _: ret.next(), xrange(5)))
+        self.assertEqual(expected_result, list(map(lambda _: ret.next(), range(5))))
 
 
 @patch('atmap.create_at_generator')
@@ -64,11 +66,12 @@ class TestCreateBatches(TestCase):
 
         self.assertEqual(ret, (batch_items.return_value, create_at_generator.return_value))
 
+
 class TestScheduleBatches(TestCase):
 
     command = 'echo {0} {1}'
     batches = [[[1, 2]], [[3, 4]], [[5, 6]], [[7, 8]], [[9, 10]]]
-    at = (x for x in xrange(10))
+    at = (x for x in range(10))
     email = 'test@example.com'
     parallel = 2
     test_args = [command, batches, at, email, parallel]
@@ -82,7 +85,6 @@ class TestScheduleBatches(TestCase):
     def test_schedule_batches_schedules_batches(self):
         ret = schedule_batches(*self.test_args)
 
-        expected_result = 'blaap'
         expected_result = [
                 'echo "(echo 1 2) | mail -s \'at command output\' test@example.com" 2>&1 | at 5', 
                 'echo "(echo 3 4) | mail -s \'at command output\' test@example.com" 2>&1 | at 6', 

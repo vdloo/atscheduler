@@ -5,6 +5,7 @@ import sys
 
 from atmap import atschedule
 
+
 def get_args():
     parser = ArgumentParser(description="Schedule 'at' commmands")
     parser.add_argument('command', help='Command to run for all items. More than one \'%%\' possible.')
@@ -15,9 +16,11 @@ def get_args():
     parser.add_argument('-i', help='Interval in minutes between batches', default=0, type=int)
     return parser.parse_args()
 
+
 def get_args_from_stdin():
     input_from_stdin = sys.stdin.read()
     return input_from_stdin.split()
+
 
 def main():
     args = get_args()
